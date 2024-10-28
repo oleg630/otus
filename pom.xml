@@ -27,6 +27,7 @@
     </properties>
 
     <modules>
-        <module>hw01</module>
+        <module>hw01-xml-config</module>
+        <module>hw02-annotation-config</module>
     </modules>
 </project>
