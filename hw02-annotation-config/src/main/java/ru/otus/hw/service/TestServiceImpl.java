@@ -38,12 +38,7 @@ public class TestServiceImpl implements TestService {
         int input = ioService.readIntForRangeWithPrompt(1, question.answers().size(),
                 "please enter answer number:", "wrong number");
 
-        for (int i = 0; i < question.answers().size(); i++) {
-            if (question.answers().get(i).isCorrect() && (input == i + 1)) {
-                return true;
-            }
-        }
-        return false;
+        return input > 0 && input <= question.answers().size() && question.answers().get(input - 1).isCorrect();
     }
 
     private void printQuestion(Question question, boolean showAnswers) {
