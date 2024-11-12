@@ -7,11 +7,11 @@ import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
@@ -25,26 +25,32 @@ public class CsvQuestionDao implements QuestionDao {
         // Использовать QuestionReadException
         // Про ресурсы: https://mkyong.com/java/java-read-a-file-from-resources-folder/
 
-        try (FileReader fileReader = new FileReader(getFileFromResource(fileNameProvider.getTestFileName()))) {
-            List<QuestionDto> questionDtos = new CsvToBeanBuilder(fileReader)
+        try (InputStreamReader streamReader = new InputStreamReader(
+                getFileFromResourceAsStream(fileNameProvider.getTestFileName()), StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(streamReader);
+        ) {
+            List<QuestionDto> questionDtos = new CsvToBeanBuilder(bufferedReader)
                     .withType(QuestionDto.class)
                     .withSeparator(';')
                     .withSkipLines(1)
                     .build().parse();
 
             questions = questionDtos.stream().map(QuestionDto::toDomainObject).toList();
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             throw new QuestionReadException(e.getMessage());
         }
     }
 
-    private File getFileFromResource(String fileName) throws URISyntaxException {
+    private InputStream getFileFromResourceAsStream(String fileName) {
+        // The class loader that loaded the class
         ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
-            throw new QuestionReadException("file not found! " + fileName);
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        // the stream holding the file content
+        if (inputStream == null) {
+            throw new IllegalArgumentException("file not found! " + fileName);
         } else {
-            return new File(resource.toURI());
+            return inputStream;
         }
     }
 

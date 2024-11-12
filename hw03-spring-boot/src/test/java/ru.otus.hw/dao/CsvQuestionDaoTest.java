@@ -1,10 +1,8 @@
 package ru.otus.hw.dao;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.otus.hw.config.AppProperties;
+import ru.otus.hw.config.TestFileNameProvider;
 import ru.otus.hw.domain.Question;
 import ru.otus.hw.exceptions.QuestionReadException;
 
@@ -15,13 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {AppProperties.class})
-@EnableConfigurationProperties(value = AppProperties.class)
-class CsvQuestionDaoTest {
-
-    @Autowired
-    private AppProperties appProperties;
+public class CsvQuestionDaoTest {
 
     @Test
     void testFileNotFound() {
@@ -38,7 +33,9 @@ class CsvQuestionDaoTest {
 
     @Test
     void testFindAll() {
-        CsvQuestionDao csvQuestionDao = new CsvQuestionDao(appProperties);
+        TestFileNameProvider testFileNameProvider = mock(TestFileNameProvider.class);
+        when(testFileNameProvider.getTestFileName()).thenReturn("test_ru.csv");
+        CsvQuestionDao csvQuestionDao = new CsvQuestionDao(testFileNameProvider);
 
         assertNotNull(csvQuestionDao);
 
