@@ -48,7 +48,7 @@ public class CsvQuestionDao implements QuestionDao {
 
         // the stream holding the file content
         if (inputStream == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
+            throw new QuestionReadException("file not found! " + fileName);
         } else {
             return inputStream;
         }
