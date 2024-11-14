@@ -5,32 +5,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.4</version>
-        <relativePath/>
+        <artifactId>hw-base</artifactId>
+        <groupId>ru.otus.hw</groupId>
+        <version>1.0</version>
     </parent>
-
-    <groupId>ru.otus.hw</groupId>
     <artifactId>hw03-spring-boot</artifactId>
-    <version>1.0</version>
 
-    <properties>
-        <maven.compiler.target>17</maven.compiler.target>
-        <maven.compiler.source>17</maven.compiler.source>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <opencsv.version>5.9</opencsv.version>
-        <lombok.version>1.18.32</lombok.version>
-        <checkstyle-plugin.version>3.3.1</checkstyle-plugin.version>
-        <checkstyle.version>10.15.0</checkstyle.version>
-        <checkstyle.config.url>
-            https://raw.githubusercontent.com/OtusTeam/Spring/master/checkstyle.xml
-        </checkstyle.config.url>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -56,7 +45,6 @@
             <optional>true</optional>
             <version>${lombok.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>
