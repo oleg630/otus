@@ -21,12 +21,12 @@ class AppPropertiesTest {
 
     @Test
     void getTestFileName() {
-        assertEquals("test_ru.csv", appProperties.getTestFileName());
+        assertEquals("test.csv", appProperties.getTestFileName());
     }
 
     @Test
     void getLocale() {
-        assertEquals("RU", appProperties.getLocale().getCountry());
-        assertEquals("ru", appProperties.getLocale().getLanguage());
+        assertEquals("US", appProperties.getLocale().getCountry());
+        assertEquals("en", appProperties.getLocale().getLanguage());
     }
 }
