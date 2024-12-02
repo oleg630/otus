@@ -6,6 +6,7 @@ import ru.otus.hw.models.Genre;
 import ru.otus.hw.repositories.GenreRepository;
 
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -15,5 +16,11 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public List<Genre> findAll() {
         return genreRepository.findAll();
+    }
+
+
+    @Override
+    public List<Genre> findById(Set<Long> ids) {
+        return genreRepository.findByIds(ids);
     }
 }
