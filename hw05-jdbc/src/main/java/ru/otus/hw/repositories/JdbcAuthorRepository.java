@@ -1,6 +1,5 @@
 package ru.otus.hw.repositories;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -34,11 +33,7 @@ public class JdbcAuthorRepository implements AuthorRepository {
         String sql = "select id, full_name from authors where id = :author_id";
         Map<String, Object> namedParameters = Collections.singletonMap("author_id", id);
 
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, namedParameters, new AuthorRowMapper()));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+        return jdbcTemplate.query(sql, namedParameters, new AuthorRowMapper()).stream().findFirst();
     }
 
     private static class AuthorRowMapper implements RowMapper<Author> {

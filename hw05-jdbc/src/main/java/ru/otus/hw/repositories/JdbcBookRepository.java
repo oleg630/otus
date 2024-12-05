@@ -38,19 +38,15 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public Optional<Book> findById(long id) {
-        String sql = "select b.id, b.title, b.author_id, a.full_name as author_name from books b " +
-                "left join authors a on (a.id = b.author_id) where b.id = :book_id ";
+        String sql = "select b.id, b.title, b.author_id, a.full_name as author_name, " +
+                "g.id as genre_id, g.name as genre_name from books b " +
+                "left join authors a on (a.id = b.author_id) " +
+                "left join books_genres bg on (bg.book_id = b.id) " +
+                "left join genres g on (g.id = bg.genre_id) " +
+                "where b.id = :book_id";
         Map<String, Object> namedParameters = Collections.singletonMap("book_id", id);
 
-        Book book = jdbcTemplate.query(sql, namedParameters, new BookResultSetExtractor());
-        if (book != null) {
-            var genres = genreRepository.findAll();
-            var relations = getBookGenreRelations(book.getId());
-            mergeBooksInfo(List.of(book), genres, relations);
-            return Optional.of(book);
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(jdbcTemplate.query(sql, namedParameters, new BookResultSetExtractor()));
     }
 
     @Override
@@ -75,12 +71,9 @@ public class JdbcBookRepository implements BookRepository {
         removeGenresRelationsFor(id);
 
         Map<String, Object> params = Collections.singletonMap("id", id);
-        int updated = jdbcTemplate.update(
+        jdbcTemplate.update(
                 "delete from books where id = :id", params
         );
-        if (updated == 0) {
-            throw new EntityNotFoundException("Entity with ID: " + id + " not found");
-        }
     }
 
     private List<Book> getAllBooksWithoutGenres() {
@@ -93,12 +86,6 @@ public class JdbcBookRepository implements BookRepository {
     private List<BookGenreRelation> getAllGenreRelations() {
         String sql = "select book_id, genre_id from books_genres";
         return jdbcTemplate.query(sql, new BookGenreRowMapper());
-    }
-
-    private List<BookGenreRelation> getBookGenreRelations(Long bookId) {
-        String sql = "select book_id, genre_id from books_genres where book_id = :book_id";
-        Map<String, Object> params = Collections.singletonMap("book_id", bookId);
-        return jdbcTemplate.query(sql, params, new BookGenreRowMapper());
     }
 
     private void mergeBooksInfo(List<Book> booksWithoutGenres, List<Genre> genres,
@@ -198,11 +185,14 @@ public class JdbcBookRepository implements BookRepository {
             Book book = new Book();
             book.setId(rs.getLong("id"));
             book.setTitle(rs.getString("title"));
+            book.setAuthor(new Author(rs.getLong("author_id"), rs.getString("author_name")));
 
-            Author author = new Author();
-            author.setId(rs.getLong("author_id"));
-            author.setFullName(rs.getString("author_name"));
-            book.setAuthor(author);
+            List<Genre> genres = new ArrayList<>();
+            do {
+                genres.add(new Genre(rs.getLong("genre_id"), rs.getString("genre_name")));
+            } while (rs.next());
+
+            book.setGenres(genres);
             return book;
         }
     }
