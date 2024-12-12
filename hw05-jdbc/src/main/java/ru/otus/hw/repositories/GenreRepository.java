@@ -8,5 +8,5 @@ import java.util.Set;
 public interface GenreRepository {
     List<Genre> findAll();
 
-    List<Genre> findAllByIds(Set<Long> ids);
+    List<Genre> findByIds(Set<Long> ids);
 }
