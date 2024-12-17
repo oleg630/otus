@@ -18,6 +18,3 @@ spring:
     console:
       enabled: true
       path: /h2-console
-      #settings.trace: false
-      #settings.web-allow-others: true
-      #settings.webPort: 8080

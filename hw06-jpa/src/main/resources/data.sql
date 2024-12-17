@@ -13,5 +13,5 @@ values (1, 1),   (1, 2),
        (2, 3),   (2, 4),
        (3, 5),   (3, 6);
 
-insert into books_comments(book_id, text)
+insert into comments(book_id, text)
 values (1l, 'my comment 1');

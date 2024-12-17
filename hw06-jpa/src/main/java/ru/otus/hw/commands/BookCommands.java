@@ -55,8 +55,4 @@ public class BookCommands {
         bookService.deleteById(id);
     }
 
-    @ShellMethod(value = "Insert book", key = "bcom")
-    public void addComment(long id, String text) {
-        bookService.addComment(id, text);
-    }
 }

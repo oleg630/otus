@@ -11,13 +11,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 
@@ -27,6 +27,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "books")
+@NamedEntityGraph(name = "book_entity_graph",
+        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genres")})
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,18 +41,9 @@ public class Book {
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @BatchSize(size = 5)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private List<Genre> genres;
 
-    @BatchSize(size = 5)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "book_id")
-    private List<BookComment> bookComments;
-
-    public Book(Long id, String title, Author author, List<Genre> genres) {
-        this(id, title, author, genres, null);
-    }
 }
