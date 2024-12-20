@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
 @Entity
 @Table(name = "books")
 @NamedEntityGraph(name = "book_entity_graph",
-        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genres")})
+        attributeNodes = {@NamedAttributeNode("author")})
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +42,7 @@ public class Book {
     @JoinColumn(name = "author_id")
     private Author author;
 
+    @BatchSize(size = 5)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
