@@ -22,7 +22,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("Сервис для работы с комментами")
 @DataJpaTest
@@ -88,11 +87,8 @@ class CommentServiceTest {
     }
 
     private void compareTwoComments(Comment expected, Comment actual) {
-        assertNotNull(actual);
-        assertEquals(expected.getText(), actual.getText());
-        assertEquals(expected.getBook().getId(), actual.getBook().getId());
-        assertEquals(expected.getBook().getTitle(), actual.getBook().getTitle());
-        assertEquals(expected.getBook().getAuthor().getId(), actual.getBook().getAuthor().getId());
-        assertEquals(expected.getBook().getAuthor().getFullName(), actual.getBook().getAuthor().getFullName());
+        assertThat(actual).isNotNull()
+                .matches(book -> book.getId() > 0)
+                .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expected);
     }
 }

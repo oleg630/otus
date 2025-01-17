@@ -22,7 +22,14 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public List<Comment> findByBookId(long bookId) {
-        return commentRepository.findByBookId(bookId);
+        List<Comment> comments = commentRepository.findByBookId(bookId);
+
+        comments.forEach(c -> {
+            c.getBook().getAuthor().getFullName();
+            c.getBook().getGenres().size();
+        });    // for eager loading
+
+        return comments;
     }
 
     @Transactional
@@ -32,6 +39,9 @@ public class CommentServiceImpl implements CommentService {
         if (book == null) {
             throw new EntityNotFoundException("Book with id " + bookId + " not found");
         }
+        book.getGenres().size();    // for eager loading
+        book.getAuthor().getFullName();
+
         return commentRepository.save(new Comment(null, book, text));
     }
 
@@ -41,6 +51,10 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Comment with id " + id + " not found"));
         comment.setText(text);
+
+        comment.getBook().getGenres().size();    // for eager loading
+        comment.getBook().getAuthor().getFullName();
+
         return commentRepository.save(comment);
     }
 

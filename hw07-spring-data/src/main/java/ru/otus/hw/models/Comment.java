@@ -27,7 +27,6 @@ public class Comment {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    //@BatchSize(size = 5)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "book_id")
     private Book book;

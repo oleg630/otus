@@ -27,13 +27,19 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     @Override
     public Optional<Book> findById(long id) {
-        return bookRepository.findById(id);
+        Optional<Book> byId = bookRepository.findById(id);
+        byId.ifPresent(b -> b.getGenres().size());    // for eager loading
+        return byId;
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<Book> findAll() {
-        return bookRepository.findAll();
+        List<Book> books = bookRepository.findAll();
+        for (Book book : books) {
+            book.getGenres().size();    // for eager loading
+        }
+        return books;
     }
 
     @Transactional

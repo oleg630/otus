@@ -19,9 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Сервис для работы с книгами")
@@ -113,11 +111,8 @@ class BookServiceTest {
     }
 
     private void compareTwoBooks(Book expected, Book actual) {
-        assertNotNull(actual);
-        assertEquals(expected.getTitle(), actual.getTitle());
-        assertEquals(expected.getAuthor().getId(), actual.getAuthor().getId());
-        assertEquals(expected.getAuthor().getFullName(), actual.getAuthor().getFullName());
-        assertThat(expected.getGenres().stream().map(Genre::getId).toArray())
-                .containsExactly(actual.getGenres().stream().map(Genre::getId).toArray());
+        assertThat(actual).isNotNull()
+                .matches(book -> book.getId() > 0)
+                .usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expected);
     }
 }
