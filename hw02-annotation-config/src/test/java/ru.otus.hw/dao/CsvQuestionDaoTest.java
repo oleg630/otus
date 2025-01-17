@@ -23,7 +23,7 @@ class CsvQuestionDaoTest {
                 () -> new CsvQuestionDao(fileNameProvider)
         );
 
-        assertTrue(thrown.getMessage().contains("file not found: test"));
+        assertTrue(thrown.getMessage().contains("file not found! test"));
     }
 
     @Test
